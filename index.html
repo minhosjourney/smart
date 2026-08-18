@@ -1,251 +1,1001 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>수원 동별 미세먼지 조회</title>
-  <style>
-    :root {
-      --navy: #102a43;
-      --blue: #1976d2;
-      --sky: #e7f2ff;
-      --green: #18a67d;
-      --muted: #6b7c93;
-      --white: #fff;
-      --shadow: 0 14px 35px rgba(16, 42, 67, .12);
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      color: var(--navy);
-      font-family: "Pretendard", "Noto Sans KR", Arial, sans-serif;
-      background: linear-gradient(135deg, #eef7ff, #f7fbff 55%, #e9fff8);
-    }
-
-    header {
-      padding: 35px 20px 25px;
-      text-align: center;
-    }
-
-    h1 { margin: 0 0 9px; font-size: clamp(25px, 5vw, 39px); }
-    header p { margin: 0; color: var(--muted); }
-
-    main { width: min(960px, calc(100% - 32px)); margin: 0 auto 50px; }
-
-    .key-box, .dashboard {
-      padding: 22px;
-      border: 1px solid rgba(25, 118, 210, .12);
-      border-radius: 20px;
-      background: rgba(255, 255, 255, .93);
-      box-shadow: var(--shadow);
-    }
-
-    .key-row { display: flex; gap: 10px; }
-    .key-row input {
-      flex: 1;
-      min-width: 0;
-      padding: 13px 15px;
-      border: 1px solid #cbd9e6;
-      border-radius: 11px;
-      font-size: 15px;
-    }
-
-    button {
-      border: 0;
-      border-radius: 11px;
-      cursor: pointer;
-      font-weight: 700;
-      transition: transform .15s, box-shadow .15s;
-    }
-    button:hover { transform: translateY(-2px); }
-
-    .save-btn { padding: 0 22px; color: white; background: var(--blue); }
-    .help { margin: 10px 2px 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
-
-    .dashboard { margin-top: 24px; }
-    @keyframes show { from { opacity: 0; transform: translateY(8px); } }
-
-    .dash-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-    .dash-head h2 { margin: 0; font-size: 24px; }
-    .refresh { padding: 10px 15px; color: var(--blue); background: var(--sky); }
-    .station-search {
-      display: flex;
-      gap: 10px;
-      margin-top: 20px;
-      padding: 17px;
-      border-radius: 15px;
-      background: #eef8f4;
-    }
-    .station-search label { align-self: center; font-weight: 800; white-space: nowrap; }
-    .station-search input {
-      flex: 1;
-      min-width: 0;
-      padding: 12px 14px;
-      border: 1px solid #b9d8ce;
-      border-radius: 10px;
-      color: var(--navy);
-      background: white;
-      font-size: 16px;
-    }
-    .station-search button { padding: 0 22px; color: white; background: var(--green); }
-
-    .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 22px; }
-    .card { min-height: 155px; padding: 24px; border-radius: 17px; background: #f5f9fd; }
-    .card .label { color: var(--muted); font-size: 15px; }
-    .value { margin-top: 18px; font-size: clamp(34px, 7vw, 52px); font-weight: 800; }
-    .unit { margin-left: 4px; font-size: 18px; font-weight: 600; color: var(--muted); }
-    .grade { margin-top: 9px; font-weight: 800; }
-    .meta { margin: 20px 2px 0; color: var(--muted); font-size: 14px; }
-    .message { min-height: 22px; margin: 14px 2px 0; font-size: 14px; color: #d14343; }
-    .loading { opacity: .55; }
-
-    footer { padding: 0 15px 25px; text-align: center; color: var(--muted); font-size: 13px; }
-
-    @media (max-width: 620px) {
-      .key-row, .dash-head { align-items: stretch; flex-direction: column; }
-      .save-btn { padding: 13px; }
-      .cards { grid-template-columns: 1fr; }
-      .station-search { align-items: stretch; flex-direction: column; }
-      .station-search button { padding: 13px; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RC Car Camera-Side Navigation + Public Data</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0f1115;color:#f3f5f7;font-family:Arial,"Noto Sans KR",sans-serif}
+header{padding:14px 18px;background:#171a21;border-bottom:1px solid #303641}
+h1{margin:0 0 5px;font-size:23px}.sub{font-size:13px;color:#aeb7c4}
+main{display:grid;grid-template-columns:minmax(680px,1fr) 330px;gap:14px;max-width:1210px;margin:auto;padding:14px}
+.panel{background:#171a21;border:1px solid #303641;border-radius:12px;padding:13px}
+.toolbar{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-bottom:8px}
+input{padding:8px;border-radius:7px;border:1px solid #454d5d;background:#0d1015;color:white}
+.ip{width:160px}.small{width:72px}
+button{padding:8px 11px;border:1px solid #424a59;border-radius:7px;background:#252b36;color:white;cursor:pointer}
+button:hover{background:#303847}
+button.active{outline:2px solid #ffd84d;background:#3b4352}
+.primary{background:#1e63d7}.success{background:#237b45}.danger{background:#912e2e}
+#status{font-size:20px;font-weight:700;margin:10px 0}
+#info{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:10px 0}
+.box{background:#101319;border:1px solid #303641;border-radius:8px;padding:8px;min-height:58px}
+.label{font-size:11px;color:#8995a5}.value{font:13px monospace;margin-top:5px}
+#cameraBox{width:640px;height:480px;margin:auto;background:#050607;position:relative}
+video{display:none}
+canvas{display:block;width:640px;height:480px;border:1px solid #424956;cursor:crosshair}
+.note{margin-top:10px;color:#aeb7c4;font-size:13px;line-height:1.65}
+h2{font-size:18px;margin:0}.historyHead{display:flex;justify-content:space-between;align-items:center;gap:8px}
+#routeList{margin-top:9px;max-height:610px;overflow:auto}
+.route{background:#101319;border:1px solid #343b48;border-radius:8px;padding:9px;margin-bottom:8px}
+.route strong{display:block;margin-bottom:5px}.meta{font-size:12px;color:#9ca7b5;line-height:1.45}
+.actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}.actions button{font-size:11px;padding:5px 7px}
+.weather{margin-top:8px;padding:10px;background:#101319;border:1px solid #343b48;border-radius:8px;line-height:1.55}
+.weather b{display:block;margin-bottom:3px}
+.controls{margin-top:10px;padding-top:10px;border-top:1px solid #303641}
+.rangeLine{display:grid;grid-template-columns:1fr 180px;gap:8px;align-items:center;margin:7px 0;font-size:12px;color:#b9c2ce}
+.rangeLine input{width:100%}
+@media(max-width:1060px){main{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-  <header>
-    <h1>수원 지역 공공데이터 대시보드</h1>
-    <p>수원 지역 측정소의 실시간 미세먼지 정보를 확인합니다.</p>
-  </header>
+<header>
+  <h1>RC CAR CAMERA-SIDE NAVIGATION</h1>
+  <div class="sub">출발지·도착지 직접 클릭 → 경로 계산 → 실행 · FRONT=카메라 없음 · BACK=카메라 있음 · 공공데이터 OpenAPI 1개</div>
+</header>
 
-  <main>
-    <section class="key-box">
-      <div class="key-row">
-        <input id="serviceKey" type="password" placeholder="공공데이터포털 일반 인증키(Decoding)를 입력하세요">
-        <button class="save-btn" onclick="saveKey()">인증키 저장</button>
-      </div>
-      <p class="help">인증키는 이 브라우저에만 저장되며 GitHub에 올라가지 않습니다. 에어코리아 대기오염정보 API의 활용신청이 필요합니다.</p>
-    </section>
+<main>
+<section class="panel">
 
-    <section id="dust" class="dashboard">
-      <div class="dash-head">
-        <h2>수원 미세먼지</h2>
-        <button class="refresh" onclick="loadDust()">새로고침</button>
-      </div>
-      <div class="station-search">
-        <label for="stationName">조회할 동</label>
-        <input id="stationName" list="suwonStations" type="text" placeholder="예: 인계동, 영통동" autocomplete="off">
-        <datalist id="suwonStations">
-          <option value="인계동"></option><option value="천천동"></option>
-          <option value="신풍동"></option><option value="영통동"></option>
-          <option value="호매실동"></option><option value="고색동"></option>
-          <option value="광교동"></option>
-        </datalist>
-        <button onclick="loadDust()">미세먼지 조회</button>
-      </div>
-      <div class="cards">
-        <article class="card">
-          <div class="label">미세먼지 PM10</div>
-          <div class="value"><span id="pm10">--</span><span class="unit">㎍/㎥</span></div>
-          <div id="pm10Grade" class="grade"></div>
-        </article>
-        <article class="card">
-          <div class="label">초미세먼지 PM2.5</div>
-          <div class="value"><span id="pm25">--</span><span class="unit">㎍/㎥</span></div>
-          <div id="pm25Grade" class="grade"></div>
-        </article>
-      </div>
-      <p id="dustMeta" class="meta">한국환경공단 에어코리아 · 수원 지역 측정소</p>
-      <p id="dustMessage" class="message"></p>
-    </section>
-  </main>
+  <div class="toolbar">
+    <span>ESP32 IP</span>
+    <input id="espIP" class="ip" value="10.114.189.200">
+    <button onclick="testESP()">연결 테스트</button>
+  </div>
 
-  <footer>데이터 출처: 한국환경공단 에어코리아</footer>
+  <div class="toolbar">
+    <button id="selectStartBtn" onclick="selectPointMode('start')">① 출발지점 지정</button>
+    <button id="selectTargetBtn" onclick="selectPointMode('target')">② 도착지점 지정</button>
+    <button onclick="calculateRoute()">③ 경로 계산</button>
+    <button class="success" onclick="executeRoute()">④ 실행</button>
+    <button class="danger" onclick="stopAuto()">STOP</button>
+    <button onclick="resetPoints()">지점 초기화</button>
+  </div>
 
-  <script>
-    const DUST_URL = "https://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty";
+  <div class="toolbar">
+    <span>공공데이터 인증키</span>
+    <input id="serviceKey" type="password" style="width:340px" placeholder="공공데이터포털 일반 인증키(Encoding/Decoding)">
+    <label style="font-size:12px;color:#b9c2ce">
+      <input id="saveApiKey" type="checkbox" style="width:auto"> 이 브라우저에 저장
+    </label>
+  </div>
 
-    const keyInput = document.getElementById("serviceKey");
-    const stationInput = document.getElementById("stationName");
-    const SUWON_STATIONS = ["인계동", "천천동", "신풍동", "영통동", "호매실동", "고색동", "광교동"];
-    keyInput.value = localStorage.getItem("publicDataServiceKey") || "";
-    stationInput.value = localStorage.getItem("suwonDustStation") || "";
-    stationInput.addEventListener("keydown", event => {
-      if (event.key === "Enter") loadDust();
+  <div class="toolbar">
+    <span>기상 격자</span>
+    <span>NX</span><input id="nx" class="small" type="number" value="60">
+    <span>NY</span><input id="ny" class="small" type="number" value="121">
+    <button onclick="testPublicDataKey()">인증 확인</button>
+    <button onclick="loadWeather()">공공데이터 조회</button>
+  </div>
+
+  <div class="weather">
+    <b>승인 서비스: 기상청_단기예보 조회서비스 · getUltraSrtNcst</b>
+    <span id="weatherInfo">승인된 일반 인증키를 입력한 뒤 [인증 확인]을 누르세요.</span><br>
+    <span id="apiStatus" style="font-size:12px;color:#98a4b3">API 상태: 대기</span>
+  </div>
+
+  <div id="status">카메라 준비 중...</div>
+
+  <div id="info">
+    <div class="box"><div class="label">START</div><div id="startInfo" class="value">-</div></div>
+    <div class="box"><div class="label">TARGET</div><div id="targetInfo" class="value">-</div></div>
+    <div class="box"><div class="label">RC CAR</div><div id="carInfo" class="value">-</div></div>
+    <div class="box"><div class="label">NAVIGATION</div><div id="navInfo" class="value">-</div></div>
+  </div>
+
+  <div class="weather" style="margin-top:8px">
+    <b>RC카 방향 기준</b>
+    <span>🟡 FRONT = 카메라가 없는 쪽 &nbsp; / &nbsp; 🔵 BACK = 카메라가 장착된 쪽</span>
+  </div>
+
+  <div id="cameraBox">
+    <video id="video" width="640" height="480" autoplay playsinline></video>
+    <canvas id="canvas" width="640" height="480"></canvas>
+  </div>
+
+  <div class="note">
+    <b>사용 순서:</b>
+    ① <b>출발지점 지정</b>을 누르고 웹캠 화면 클릭 →
+    ② <b>도착지점 지정</b>을 누르고 화면 클릭 →
+    ③ <b>경로 계산</b> →
+    ④ 화면에 표시된 경로를 확인한 뒤 <b>실행</b>.<br>
+    RC카 위치/방향은 <b>카메라가 없는 쪽=노란 FRONT 마커</b>, <b>카메라가 있는 쪽=파란 BACK 마커</b>로 인식합니다.
+    경로 계산만 눌렀을 때는 RC카가 움직이지 않습니다.<br><b>인증키:</b> 입력한 키는 로컬 server.py로 POST 전송됩니다. "이 브라우저에 저장"을 선택한 경우에만 localStorage에 저장됩니다.
+  </div>
+
+  <div class="controls">
+    <div class="rangeLine">
+      <span>어두운 장애물 밝기 기준</span>
+      <input id="darkThreshold" type="range" min="30" max="170" value="78">
+    </div>
+    <div class="rangeLine">
+      <span>장애물 셀 점유율 기준</span>
+      <input id="occupancyThreshold" type="range" min="20" max="90" value="55">
+    </div>
+  </div>
+</section>
+
+<aside class="panel">
+  <div class="historyHead">
+    <h2>저장된 경로</h2>
+    <button onclick="clearRoutes()">전체 삭제</button>
+  </div>
+  <div class="sub" style="margin-top:5px">도착 성공 시 실제 START → TARGET 이동 좌표를 저장합니다.</div>
+  <div id="routeList"></div>
+</aside>
+</main>
+
+<script>
+const video=document.getElementById("video");
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
+
+const W=640,H=480;
+const GRID_COLS=32,GRID_ROWS=24;
+const CELL_W=W/GRID_COLS,CELL_H=H/GRID_ROWS;
+const ARRIVAL_RADIUS=34;
+const WAYPOINT_RADIUS=25;
+const ANGLE_TOL=16*Math.PI/180;
+const SEND_INTERVAL=250;
+const RECORD_INTERVAL=100;
+const REPLAN_INTERVAL=1400;
+const STORAGE_KEY="rcManualStartTargetRoutesV1";
+const IP_KEY="rcManualStartTargetEspIpV1";
+const API_KEY_STORAGE="rcPublicDataServiceKeyV1";
+
+let selectionMode=null;
+let startPoint=null,targetPoint=null;
+let yellowFront=null,blueBack=null,car=null;
+let obstacleGrid=[];
+let plannedStartToTarget=[];
+let activePath=[];
+let waypointIndex=0;
+let phase="idle"; // idle | toStart | toTarget
+let auto=false;
+let routeCalculated=false;
+
+let lastSend=0,lastRecord=0,lastPlan=0;
+let routeStartedAt=0;
+let actualTrack=[];
+let history=loadHistory();
+let viewedRoute=null;
+let lastFrameData=null;
+let weatherSafe=true;
+
+const statusEl=document.getElementById("status");
+const startInfo=document.getElementById("startInfo");
+const targetInfo=document.getElementById("targetInfo");
+const carInfo=document.getElementById("carInfo");
+const navInfo=document.getElementById("navInfo");
+const apiStatusEl=document.getElementById("apiStatus");
+const ipEl=document.getElementById("espIP");
+const serviceKeyEl=document.getElementById("serviceKey");
+const saveApiKeyEl=document.getElementById("saveApiKey");
+
+const savedIp=localStorage.getItem(IP_KEY);
+if(savedIp)ipEl.value=savedIp;
+ipEl.addEventListener("change",()=>localStorage.setItem(IP_KEY,ipEl.value.trim()));
+
+const savedApiKey=localStorage.getItem(API_KEY_STORAGE);
+if(savedApiKey){
+  serviceKeyEl.value=savedApiKey;
+  saveApiKeyEl.checked=true;
+}
+
+saveApiKeyEl.addEventListener("change",()=>{
+  if(saveApiKeyEl.checked && serviceKeyEl.value.trim()){
+    localStorage.setItem(API_KEY_STORAGE,serviceKeyEl.value.trim());
+  }else{
+    localStorage.removeItem(API_KEY_STORAGE);
+  }
+});
+
+serviceKeyEl.addEventListener("change",()=>{
+  if(saveApiKeyEl.checked){
+    localStorage.setItem(API_KEY_STORAGE,serviceKeyEl.value.trim());
+  }
+});
+
+async function startCamera(){
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({
+      video:{width:W,height:H},audio:false
+    });
+    video.srcObject=stream;
+    await video.play();
+    statusEl.textContent="출발지점과 도착지점을 지정하세요.";
+    requestAnimationFrame(loop);
+  }catch(e){
+    console.error(e);
+    statusEl.textContent="WEBCAM ERROR";
+    alert("웹캠을 사용할 수 없습니다. localhost에서 실행하고 카메라 권한을 허용하세요.");
+  }
+}
+
+async function testESP(){
+  const ip=ipEl.value.trim();
+  localStorage.setItem(IP_KEY,ip);
+  try{
+    const res=await fetch(`http://${ip}/`,{cache:"no-store"});
+    if(!res.ok)throw new Error(res.status);
+    alert("ESP32 연결 성공\n\n"+await res.text());
+    statusEl.textContent="ESP32 CONNECTED";
+  }catch(e){
+    console.error(e);
+    statusEl.textContent="ESP32 CONNECTION FAILED";
+    alert("ESP32 연결 실패");
+  }
+}
+
+async function testPublicDataKey(){
+  const serviceKey=serviceKeyEl.value.trim();
+  const nx=document.getElementById("nx").value.trim();
+  const ny=document.getElementById("ny").value.trim();
+  const el=document.getElementById("weatherInfo");
+
+  if(!serviceKey){
+    weatherSafe=false;
+    el.textContent="공공데이터포털 일반 인증키를 먼저 입력하세요.";
+    apiStatusEl.textContent="API 상태: 인증키 없음";
+    return;
+  }
+
+  if(!nx || !ny){
+    weatherSafe=false;
+    el.textContent="NX와 NY를 입력하세요.";
+    apiStatusEl.textContent="API 상태: 격자좌표 없음";
+    return;
+  }
+
+  if(saveApiKeyEl.checked){
+    localStorage.setItem(API_KEY_STORAGE,serviceKey);
+  }
+
+  el.textContent="승인된 인증키 확인 중...";
+  apiStatusEl.textContent="API 상태: 인증 요청 중";
+
+  try{
+    const res=await fetch("/api/weather",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        serviceKey,
+        nx,
+        ny,
+        authOnly:true
+      })
     });
 
-    function saveKey() {
-      const key = keyInput.value.trim();
-      if (!key) return alert("공공데이터포털 일반 인증키(Decoding)를 입력해 주세요.");
-      localStorage.setItem("publicDataServiceKey", key);
-      alert("인증키를 이 브라우저에 저장했습니다.");
+    const data=await res.json();
+
+    if(!res.ok || !data.authenticated){
+      throw new Error(data.error || "인증에 실패했습니다.");
     }
 
-    function getKey() {
-      let key = keyInput.value.trim();
-      if (!key) throw new Error("먼저 공공데이터포털 인증키를 입력해 주세요.");
-      try { key = decodeURIComponent(key); } catch (_) {}
-      return key;
+    apiStatusEl.textContent=
+      `API 상태: 인증 성공 · ${data.api} · resultCode ${data.resultCode}`;
+
+    el.textContent=
+      "공공데이터포털 인증 성공. 이제 [공공데이터 조회]를 누르면 실황 데이터를 불러올 수 있습니다.";
+
+  }catch(e){
+    console.error(e);
+    weatherSafe=false;
+    el.textContent="공공데이터포털 인증 실패";
+    apiStatusEl.textContent="API 상태: 인증 오류 · "+e.message;
+  }
+}
+
+async function loadWeather(){
+  const serviceKey=serviceKeyEl.value.trim();
+  const nx=document.getElementById("nx").value.trim();
+  const ny=document.getElementById("ny").value.trim();
+  const el=document.getElementById("weatherInfo");
+
+  if(!serviceKey){
+    weatherSafe=false;
+    el.textContent="공공데이터포털 인증키를 먼저 입력하세요.";
+    apiStatusEl.textContent="API 상태: 인증키 없음";
+    return;
+  }
+
+  if(!nx || !ny){
+    weatherSafe=false;
+    el.textContent="NX와 NY를 입력하세요.";
+    apiStatusEl.textContent="API 상태: 격자좌표 없음";
+    return;
+  }
+
+  if(saveApiKeyEl.checked){
+    localStorage.setItem(API_KEY_STORAGE,serviceKey);
+  }
+
+  el.textContent="공공데이터포털 조회 중...";
+  apiStatusEl.textContent="API 상태: 요청 중";
+
+  try{
+    const res=await fetch("/api/weather",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        serviceKey,
+        nx,
+        ny
+      })
+    });
+
+    const data=await res.json();
+
+    if(!res.ok || !data.authenticated){
+      throw new Error(data.error || `HTTP ${res.status}`);
     }
 
-    async function loadDust() {
-      const panel = document.getElementById("dust");
-      const message = document.getElementById("dustMessage");
-      message.textContent = "";
-      panel.classList.add("loading");
+    if(!data.hasObservations){
+      weatherSafe=false;
+      el.textContent=
+        "인증은 성공했지만 해당 기준시각/격자좌표의 관측자료가 없습니다. NX/NY를 확인하거나 잠시 후 다시 조회하세요.";
+    }else{
+      const rn1=Number(data.RN1 ?? 0);
+      const wsd=Number(data.WSD ?? 0);
+      const t1h=(data.T1H ?? "-");
 
-      try {
-        const key = getKey();
-        const stationName = stationInput.value.trim();
-        if (!stationName) throw new Error("수원 지역 동 이름을 입력해 주세요.");
-        if (!SUWON_STATIONS.includes(stationName)) {
-          throw new Error(`'${stationName}'에는 에어코리아 측정소가 없습니다. 입력 목록에서 선택해 주세요.`);
+      weatherSafe=rn1<=0 && wsd<12;
+
+      el.textContent=
+        `기온 ${t1h}℃ · 1시간 강수량 ${rn1}mm · 풍속 ${wsd}m/s · `+
+        (weatherSafe ? "주행 조건: 정상" : "주행 조건: 주의/중지");
+    }
+
+    apiStatusEl.textContent=
+      `API 상태: 정상 · ${data.api||"getUltraSrtNcst"} · `+
+      `${data.base_date||"-"} ${data.base_time||"-"} · NX ${data.nx} / NY ${data.ny}`;
+
+  }catch(e){
+    console.error(e);
+    weatherSafe=false;
+    el.textContent="공공데이터 조회 실패";
+    apiStatusEl.textContent="API 상태: 오류 · "+e.message;
+  }
+}
+
+function send(cmd){
+  const ip=ipEl.value.trim();
+  fetch(`http://${ip}/move?dir=${encodeURIComponent(cmd)}`,{cache:"no-store"}).catch(()=>{});
+}
+
+function selectPointMode(mode){
+  if(auto)return;
+
+  selectionMode=mode;
+  document.getElementById("selectStartBtn").classList.toggle("active",mode==="start");
+  document.getElementById("selectTargetBtn").classList.toggle("active",mode==="target");
+
+  statusEl.textContent=
+    mode==="start"
+      ?"웹캠 화면에서 출발지점을 클릭하세요."
+      :"웹캠 화면에서 도착지점을 클릭하세요.";
+}
+
+canvas.addEventListener("click",(event)=>{
+  if(!selectionMode||auto)return;
+
+  const rect=canvas.getBoundingClientRect();
+  const x=(event.clientX-rect.left)*canvas.width/rect.width;
+  const y=(event.clientY-rect.top)*canvas.height/rect.height;
+
+  if(selectionMode==="start"){
+    startPoint={x,y};
+    startInfo.textContent=`${x.toFixed(0)}, ${y.toFixed(0)}`;
+    statusEl.textContent="출발지점 지정 완료. 도착지점을 지정하세요.";
+  }else{
+    targetPoint={x,y};
+    targetInfo.textContent=`${x.toFixed(0)}, ${y.toFixed(0)}`;
+    statusEl.textContent="도착지점 지정 완료. 경로 계산을 누르세요.";
+  }
+
+  selectionMode=null;
+  routeCalculated=false;
+  plannedStartToTarget=[];
+  document.getElementById("selectStartBtn").classList.remove("active");
+  document.getElementById("selectTargetBtn").classList.remove("active");
+});
+
+function resetPoints(){
+  if(auto)return;
+  startPoint=null;
+  targetPoint=null;
+  plannedStartToTarget=[];
+  activePath=[];
+  routeCalculated=false;
+  viewedRoute=null;
+  startInfo.textContent="-";
+  targetInfo.textContent="-";
+  navInfo.textContent="-";
+  statusEl.textContent="출발지점과 도착지점을 다시 지정하세요.";
+}
+
+function detectCentroid(data,testFn,minCount=25){
+  let sx=0,sy=0,count=0;
+  for(let y=0;y<H;y+=2){
+    for(let x=0;x<W;x+=2){
+      const i=(y*W+x)*4;
+      const r=data[i],g=data[i+1],b=data[i+2];
+      if(testFn(r,g,b)){sx+=x;sy+=y;count++}
+    }
+  }
+  return count>=minCount?{x:sx/count,y:sy/count,count}:null;
+}
+
+function detectCar(data){
+  yellowFront=detectCentroid(
+    data,(r,g,b)=>r>145&&g>120&&b<105&&Math.abs(r-g)<95,20
+  );
+  blueBack=detectCentroid(
+    data,(r,g,b)=>b>135&&b>r*1.35&&b>g*1.15,20
+  );
+
+  if(yellowFront&&blueBack){
+    car={
+      x:(yellowFront.x+blueBack.x)/2,
+      y:(yellowFront.y+blueBack.y)/2,
+      angle:Math.atan2(
+        yellowFront.y-blueBack.y,
+        yellowFront.x-blueBack.x
+      )
+    };
+    carInfo.textContent=`${car.x.toFixed(0)}, ${car.y.toFixed(0)}`;
+  }else{
+    car=null;
+    carInfo.textContent="-";
+  }
+}
+
+function isCarMarkerColor(r,g,b){
+  return (
+    (r>145&&g>120&&b<105&&Math.abs(r-g)<95)||
+    (b>135&&b>r*1.35&&b>g*1.15)
+  );
+}
+
+function pointToCell(p){
+  return{
+    x:Math.max(0,Math.min(GRID_COLS-1,Math.floor(p.x/CELL_W))),
+    y:Math.max(0,Math.min(GRID_ROWS-1,Math.floor(p.y/CELL_H)))
+  };
+}
+
+function cellCenter(c){
+  return{x:(c.x+0.5)*CELL_W,y:(c.y+0.5)*CELL_H};
+}
+
+function buildObstacleGrid(data){
+  const darkLimit=Number(document.getElementById("darkThreshold").value);
+  const occLimit=Number(document.getElementById("occupancyThreshold").value)/100;
+  const grid=Array.from({length:GRID_ROWS},()=>Array(GRID_COLS).fill(false));
+
+  for(let gy=0;gy<GRID_ROWS;gy++){
+    for(let gx=0;gx<GRID_COLS;gx++){
+      let dark=0,total=0;
+      const x0=Math.floor(gx*CELL_W),x1=Math.floor((gx+1)*CELL_W);
+      const y0=Math.floor(gy*CELL_H),y1=Math.floor((gy+1)*CELL_H);
+
+      for(let y=y0;y<y1;y+=3){
+        for(let x=x0;x<x1;x+=3){
+          const i=(y*W+x)*4;
+          const r=data[i],g=data[i+1],b=data[i+2];
+
+          if(isCarMarkerColor(r,g,b))continue;
+
+          total++;
+          if((r+g+b)/3<darkLimit)dark++;
         }
-        localStorage.setItem("suwonDustStation", stationName);
-        const params = new URLSearchParams({
-          serviceKey: key, returnType: "json", numOfRows: "1", pageNo: "1",
-          stationName, dataTerm: "DAILY", ver: "1.3"
+      }
+      grid[gy][gx]=total>0&&(dark/total)>=occLimit;
+    }
+  }
+
+  // RC카 폭을 고려해 장애물 주변 1셀 확장
+  const inflated=grid.map(row=>row.slice());
+  for(let y=0;y<GRID_ROWS;y++){
+    for(let x=0;x<GRID_COLS;x++){
+      if(!grid[y][x])continue;
+      for(let dy=-1;dy<=1;dy++){
+        for(let dx=-1;dx<=1;dx++){
+          const nx=x+dx,ny=y+dy;
+          if(nx>=0&&nx<GRID_COLS&&ny>=0&&ny<GRID_ROWS)inflated[ny][nx]=true;
+        }
+      }
+    }
+  }
+
+  // 선택 지점과 현재 RC카 주변은 경로 탐색 가능 처리
+  [startPoint,targetPoint,car].forEach(p=>{
+    if(!p)return;
+    const c=pointToCell(p);
+    for(let dy=-1;dy<=1;dy++){
+      for(let dx=-1;dx<=1;dx++){
+        const nx=c.x+dx,ny=c.y+dy;
+        if(nx>=0&&nx<GRID_COLS&&ny>=0&&ny<GRID_ROWS)inflated[ny][nx]=false;
+      }
+    }
+  });
+
+  obstacleGrid=inflated;
+}
+
+function key(x,y){return`${x},${y}`}
+
+function aStar(startP,endP){
+  if(!startP||!endP)return[];
+
+  const s=pointToCell(startP),e=pointToCell(endP);
+  const open=[{x:s.x,y:s.y,g:0,f:0}];
+  const came=new Map();
+  const gScore=new Map([[key(s.x,s.y),0]]);
+  const closed=new Set();
+
+  const dirs=[
+    [1,0,1],[-1,0,1],[0,1,1],[0,-1,1],
+    [1,1,1.414],[-1,1,1.414],[1,-1,1.414],[-1,-1,1.414]
+  ];
+  const heuristic=(x,y)=>Math.hypot(e.x-x,e.y-y);
+
+  while(open.length){
+    open.sort((a,b)=>a.f-b.f);
+    const cur=open.shift();
+    const ck=key(cur.x,cur.y);
+
+    if(closed.has(ck))continue;
+    closed.add(ck);
+
+    if(cur.x===e.x&&cur.y===e.y){
+      const cells=[{x:e.x,y:e.y}];
+      let currentKey=ck;
+
+      while(came.has(currentKey)){
+        const p=came.get(currentKey);
+        cells.push(p);
+        currentKey=key(p.x,p.y);
+      }
+      cells.reverse();
+
+      const points=[];
+      for(let i=0;i<cells.length;i++){
+        if(i===0||i===cells.length-1||i%2===0){
+          points.push(cellCenter(cells[i]));
+        }
+      }
+
+      points[0]={x:startP.x,y:startP.y};
+      points[points.length-1]={x:endP.x,y:endP.y};
+      return points;
+    }
+
+    for(const [dx,dy,cost] of dirs){
+      const nx=cur.x+dx,ny=cur.y+dy;
+
+      if(nx<0||nx>=GRID_COLS||ny<0||ny>=GRID_ROWS)continue;
+      if(obstacleGrid[ny]?.[nx])continue;
+
+      if(dx!==0&&dy!==0){
+        if(obstacleGrid[cur.y]?.[nx]||obstacleGrid[ny]?.[cur.x])continue;
+      }
+
+      const nk=key(nx,ny);
+      if(closed.has(nk))continue;
+
+      const ng=cur.g+cost;
+      if(!gScore.has(nk)||ng<gScore.get(nk)){
+        gScore.set(nk,ng);
+        came.set(nk,{x:cur.x,y:cur.y});
+        open.push({
+          x:nx,y:ny,g:ng,
+          f:ng+heuristic(nx,ny)
         });
-        const response = await fetch(`${DUST_URL}?${params}`);
-        if (!response.ok) throw new Error(`대기 API 응답 오류(${response.status})`);
-        const data = await response.json();
-        const header = data.response?.header;
-        if (header?.resultCode !== "00") throw new Error(header?.resultMsg || "대기 데이터를 받지 못했습니다.");
-        const item = data.response?.body?.items?.[0];
-        if (!item) throw new Error(`${stationName} 측정소 데이터가 없습니다.`);
-        document.getElementById("pm10").textContent = validValue(item.pm10Value);
-        document.getElementById("pm25").textContent = validValue(item.pm25Value);
-        setGrade("pm10Grade", Number(item.pm10Value), "pm10");
-        setGrade("pm25Grade", Number(item.pm25Value), "pm25");
-        document.getElementById("dustMeta").textContent = `에어코리아 · ${stationName} 측정소 · ${item.dataTime || "측정시각 없음"}`;
-      } catch (error) {
-        message.textContent = "⚠️ " + error.message;
-      } finally {
-        panel.classList.remove("loading");
       }
     }
+  }
 
-    function validValue(value) {
-      return value && value !== "-" ? value : "자료없음";
+  return[];
+}
+
+function calculateRoute(){
+  if(auto){
+    alert("주행 중에는 새 경로를 계산할 수 없습니다.");
+    return;
+  }
+
+  if(!startPoint||!targetPoint){
+    alert("출발지점과 도착지점을 먼저 지정하세요.");
+    return;
+  }
+
+  if(!lastFrameData){
+    alert("웹캠 영상이 아직 준비되지 않았습니다.");
+    return;
+  }
+
+  buildObstacleGrid(lastFrameData);
+  plannedStartToTarget=aStar(startPoint,targetPoint);
+
+  if(!plannedStartToTarget.length){
+    routeCalculated=false;
+    statusEl.textContent="경로를 찾지 못했습니다. 지점 또는 장애물 기준을 조정하세요.";
+    navInfo.textContent="NO PATH";
+    return;
+  }
+
+  routeCalculated=true;
+  navInfo.textContent=`계산 완료 · ${plannedStartToTarget.length} waypoint`;
+  statusEl.textContent="경로 계산 완료. 화면의 하늘색 경로를 확인한 뒤 실행을 누르세요.";
+}
+
+function executeRoute(){
+  if(auto)return;
+
+  if(!routeCalculated||!plannedStartToTarget.length){
+    alert("먼저 경로 계산 버튼을 눌러 경로를 생성하세요.");
+    return;
+  }
+
+  if(!car){
+    alert("카메라 없는 쪽의 노란 FRONT 마커와 카메라 있는 쪽의 파란 BACK 마커가 모두 보여야 합니다.");
+    return;
+  }
+
+  if(!weatherSafe){
+    alert("공공데이터 기상 조건이 주의 상태이거나 정상 조회되지 않았습니다.");
+    return;
+  }
+
+  buildObstacleGrid(lastFrameData);
+
+  // 실제 RC카가 지정 START 위치에 없을 수 있으므로 먼저 START까지 이동
+  activePath=aStar(car,startPoint);
+
+  if(!activePath.length){
+    alert("현재 RC카 위치에서 출발지점까지의 경로를 찾지 못했습니다.");
+    return;
+  }
+
+  auto=true;
+  phase="toStart";
+  waypointIndex=Math.min(1,activePath.length-1);
+  actualTrack=[];
+  viewedRoute=null;
+  lastPlan=performance.now();
+  statusEl.textContent="실행 시작 · 지정한 START로 이동 중";
+}
+
+function stopAuto(){
+  auto=false;
+  phase="idle";
+  activePath=[];
+  actualTrack=[];
+  waypointIndex=0;
+  send("stop");
+  statusEl.textContent="STOP";
+}
+
+function normalizeAngle(a){
+  while(a>Math.PI)a-=Math.PI*2;
+  while(a<-Math.PI)a+=Math.PI*2;
+  return a;
+}
+
+function chooseCommand(now){
+  if(!auto)return"stop";
+
+  if(!car){
+    statusEl.textContent="RC CAR MARKER LOST";
+    return"stop";
+  }
+
+  if(phase==="toTarget"&&now-lastRecord>=RECORD_INTERVAL){
+    lastRecord=now;
+    const p={
+      x:car.x,y:car.y,
+      t:Math.max(0,Math.round(now-routeStartedAt))
+    };
+    const last=actualTrack[actualTrack.length-1];
+    if(!last||Math.hypot(p.x-last.x,p.y-last.y)>=2)actualTrack.push(p);
+  }
+
+  // 주행 중 장애물 변화에 대응해 현재 위치부터 목적지까지 재탐색
+  if(now-lastPlan>=REPLAN_INTERVAL&&lastFrameData){
+    lastPlan=now;
+    buildObstacleGrid(lastFrameData);
+
+    const goal=phase==="toStart"?startPoint:targetPoint;
+    const replanned=aStar(car,goal);
+
+    if(replanned.length){
+      activePath=replanned;
+      waypointIndex=Math.min(1,activePath.length-1);
     }
+  }
 
-    function setGrade(id, value, type) {
-      const element = document.getElementById(id);
-      if (!Number.isFinite(value)) {
-        element.textContent = "등급: 자료없음";
-        element.style.color = "#6b7c93";
-        return;
+  const goal=phase==="toStart"?startPoint:targetPoint;
+  const goalDist=Math.hypot(goal.x-car.x,goal.y-car.y);
+
+  if(goalDist<ARRIVAL_RADIUS){
+    if(phase==="toStart"){
+      phase="toTarget";
+
+      // 사용자가 계산 버튼으로 만든 START→TARGET 경로를 기본으로 사용
+      // 현재 화면 장애물이 달라졌으면 START 위치에서 한 번 재계산
+      buildObstacleGrid(lastFrameData);
+      const refreshed=aStar(car,targetPoint);
+      activePath=refreshed.length?refreshed:plannedStartToTarget.slice();
+
+      if(!activePath.length){
+        auto=false;
+        statusEl.textContent="START 도착 후 TARGET 경로를 찾지 못했습니다.";
+        return"stop";
       }
-      const limits = type === "pm10" ? [30, 80, 150] : [15, 35, 75];
-      const grades = [
-        ["좋음", "#1683d8"], ["보통", "#15966f"],
-        ["나쁨", "#e28b19"], ["매우 나쁨", "#d14343"]
-      ];
-      const index = value <= limits[0] ? 0 : value <= limits[1] ? 1 : value <= limits[2] ? 2 : 3;
-      element.textContent = `등급: ${grades[index][0]}`;
-      element.style.color = grades[index][1];
+
+      waypointIndex=Math.min(1,activePath.length-1);
+      routeStartedAt=now;
+      lastRecord=0;
+      actualTrack=[{x:car.x,y:car.y,t:0}];
+      statusEl.textContent="START 도착 · TARGET 경로 실행 중";
+      return"stop";
     }
-  </script>
+
+    actualTrack.push({
+      x:car.x,y:car.y,
+      t:Math.max(0,Math.round(now-routeStartedAt))
+    });
+
+    saveRoute(now);
+    auto=false;
+    phase="idle";
+    statusEl.textContent="TARGET 도착 · 실제 주행 경로 저장 완료";
+    navInfo.textContent="ARRIVED";
+    return"stop";
+  }
+
+  if(!activePath.length){
+    statusEl.textContent="활성 경로가 없습니다.";
+    return"stop";
+  }
+
+  while(waypointIndex<activePath.length-1){
+    const wp=activePath[waypointIndex];
+    if(Math.hypot(wp.x-car.x,wp.y-car.y)<WAYPOINT_RADIUS)waypointIndex++;
+    else break;
+  }
+
+  const wp=activePath[Math.min(waypointIndex,activePath.length-1)];
+  const targetAngle=Math.atan2(wp.y-car.y,wp.x-car.x);
+  const err=normalizeAngle(targetAngle-car.angle);
+  const dist=Math.hypot(wp.x-car.x,wp.y-car.y);
+
+  navInfo.textContent=
+    `${phase==="toStart"?"TO START":"TO TARGET"} · `+
+    `WP ${waypointIndex+1}/${activePath.length} · `+
+    `${dist.toFixed(0)}px · ${(err*180/Math.PI).toFixed(1)}°`;
+
+  if(err>ANGLE_TOL)return"right";
+  if(err<-ANGLE_TOL)return"left";
+  return"forward";
+}
+
+function saveRoute(now){
+  const item={
+    id:Date.now(),
+    createdAt:new Date().toISOString(),
+    start:{x:startPoint.x,y:startPoint.y},
+    target:{x:targetPoint.x,y:targetPoint.y},
+    durationMs:Math.max(0,Math.round(now-routeStartedAt)),
+    planned:plannedStartToTarget.map(p=>({x:p.x,y:p.y})),
+    actual:actualTrack.map(p=>({x:p.x,y:p.y,t:p.t}))
+  };
+
+  history.unshift(item);
+  history=history.slice(0,50);
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(history));
+  viewedRoute=item;
+  refreshHistory();
+}
+
+function loadHistory(){
+  try{
+    const data=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");
+    return Array.isArray(data)?data:[];
+  }catch{return[]}
+}
+
+function refreshHistory(){
+  const el=document.getElementById("routeList");
+
+  if(!history.length){
+    el.innerHTML='<div class="sub">저장된 경로가 없습니다.</div>';
+    return;
+  }
+
+  el.innerHTML=history.map(r=>`
+    <div class="route">
+      <strong>${new Date(r.createdAt).toLocaleString("ko-KR")}</strong>
+      <div class="meta">
+        START (${r.start.x.toFixed(0)}, ${r.start.y.toFixed(0)}) →
+        TARGET (${r.target.x.toFixed(0)}, ${r.target.y.toFixed(0)})<br>
+        실제 좌표 ${(r.actual||[]).length}개 ·
+        ${((r.durationMs||0)/1000).toFixed(1)}초
+      </div>
+      <div class="actions">
+        <button onclick="viewRoute(${r.id})">보기</button>
+        <button onclick="reuseRoute(${r.id})">지점 불러오기</button>
+        <button onclick="deleteRoute(${r.id})">삭제</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function viewRoute(id){
+  viewedRoute=history.find(r=>Number(r.id)===Number(id))||null;
+  if(viewedRoute)statusEl.textContent="저장된 경로를 화면에 표시합니다.";
+}
+
+function reuseRoute(id){
+  const r=history.find(x=>Number(x.id)===Number(id));
+  if(!r)return;
+
+  startPoint={x:r.start.x,y:r.start.y};
+  targetPoint={x:r.target.x,y:r.target.y};
+  plannedStartToTarget=(r.planned||[]).map(p=>({x:p.x,y:p.y}));
+  routeCalculated=plannedStartToTarget.length>0;
+
+  startInfo.textContent=`${startPoint.x.toFixed(0)}, ${startPoint.y.toFixed(0)}`;
+  targetInfo.textContent=`${targetPoint.x.toFixed(0)}, ${targetPoint.y.toFixed(0)}`;
+  viewedRoute=r;
+
+  statusEl.textContent=
+    routeCalculated
+      ?"저장된 출발/도착 지점과 계산 경로를 불러왔습니다."
+      :"출발/도착 지점을 불러왔습니다. 경로 계산을 누르세요.";
+}
+
+function deleteRoute(id){
+  history=history.filter(r=>Number(r.id)!==Number(id));
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(history));
+  if(viewedRoute&&Number(viewedRoute.id)===Number(id))viewedRoute=null;
+  refreshHistory();
+}
+
+function clearRoutes(){
+  if(!confirm("저장된 모든 경로를 삭제할까요?"))return;
+  history=[];
+  viewedRoute=null;
+  localStorage.removeItem(STORAGE_KEY);
+  refreshHistory();
+}
+
+function drawCircle(p,color,label,r=18){
+  if(!p)return;
+  ctx.beginPath();
+  ctx.arc(p.x,p.y,r,0,Math.PI*2);
+  ctx.strokeStyle=color;
+  ctx.lineWidth=4;
+  ctx.stroke();
+  ctx.fillStyle=color;
+  ctx.font="bold 14px Arial";
+  ctx.textAlign="center";
+  ctx.fillText(label,p.x,p.y-r-7);
+}
+
+function drawPolyline(points,color,width=3){
+  if(!points||points.length<2)return;
+  ctx.strokeStyle=color;
+  ctx.lineWidth=width;
+  ctx.beginPath();
+  ctx.moveTo(points[0].x,points[0].y);
+  for(let i=1;i<points.length;i++)ctx.lineTo(points[i].x,points[i].y);
+  ctx.stroke();
+}
+
+function drawGrid(){
+  if(!obstacleGrid.length)return;
+
+  ctx.save();
+  ctx.globalAlpha=0.20;
+
+  for(let y=0;y<GRID_ROWS;y++){
+    for(let x=0;x<GRID_COLS;x++){
+      if(obstacleGrid[y][x]){
+        ctx.fillStyle="#ff5e5e";
+        ctx.fillRect(x*CELL_W,y*CELL_H,CELL_W,CELL_H);
+      }
+    }
+  }
+  ctx.restore();
+}
+
+function drawScene(){
+  drawGrid();
+
+  drawCircle(startPoint,"#38e56d","START",22);
+  drawCircle(targetPoint,"#ff4545","TARGET",22);
+  drawCircle(yellowFront,"#ffe34d","FRONT·NO CAM",12);
+  drawCircle(blueBack,"#4ca8ff","BACK·CAM",12);
+
+  if(car){
+    ctx.beginPath();
+    ctx.arc(car.x,car.y,6,0,Math.PI*2);
+    ctx.fillStyle="#fff";
+    ctx.fill();
+
+    if(yellowFront&&blueBack){
+      ctx.strokeStyle="#fff";
+      ctx.lineWidth=2;
+      ctx.beginPath();
+      ctx.moveTo(blueBack.x,blueBack.y);
+      ctx.lineTo(yellowFront.x,yellowFront.y);
+      ctx.stroke();
+    }
+  }
+
+  // 경로 계산 버튼으로 생성된 예상 경로
+  if(plannedStartToTarget.length){
+    drawPolyline(plannedStartToTarget,"#63e9ff",4);
+  }
+
+  // 실행 중 현재 활성 경로
+  if(auto&&activePath.length){
+    drawPolyline(activePath,"#ffd84d",4);
+  }
+
+  // 실제 이동 기록
+  if(actualTrack.length>1){
+    drawPolyline(actualTrack,"#ff9d38",4);
+  }
+
+  // 과거 저장 경로
+  if(viewedRoute){
+    if(viewedRoute.planned)drawPolyline(viewedRoute.planned,"#a96cff",3);
+    if(viewedRoute.actual)drawPolyline(viewedRoute.actual,"#ffffff",4);
+  }
+}
+
+function loop(now){
+  ctx.drawImage(video,0,0,W,H);
+
+  const frame=ctx.getImageData(0,0,W,H);
+  lastFrameData=frame.data;
+
+  detectCar(frame.data);
+
+  // 장애물 지도는 표시를 위해 갱신하되,
+  // 사용자가 '경로 계산'을 누르기 전에는 START→TARGET 경로를 자동 생성하지 않는다.
+  if(startPoint&&targetPoint&&now-lastPlan>REPLAN_INTERVAL){
+    lastPlan=now;
+    buildObstacleGrid(frame.data);
+  }
+
+  drawScene();
+
+  // 실제 명령 전송은 실행 버튼을 눌러 auto=true가 된 경우만
+  if(auto&&now-lastSend>=SEND_INTERVAL){
+    lastSend=now;
+    send(chooseCommand(now));
+  }
+
+  requestAnimationFrame(loop);
+}
+
+refreshHistory();
+startCamera();
+</script>
 </body>
 </html>
